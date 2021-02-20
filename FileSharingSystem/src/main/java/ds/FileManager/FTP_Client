@@ -1,27 +1,28 @@
 //import javafx.scene.control.TextArea;
 
 import java.net.Socket;
+import FileReceiver;
 
 public class FTP_Client {
 
-    public FTP_Client(String ip, int port, String fileName) throws Exception {
+    public FTP_Client(int port, String ip, String fileName) throws Exception {
 
         Socket socket = new Socket(ip, port);
         long start_time = System.currentTimeMillis();
         System.out.println("Connecting...");
-        Thread t = new Thread(new DataReceivingOperation(socket, fileName));
+        Thread t = new Thread(new FileReceiver(fileName,socket));
         t.start();
         long termination_time = System.currentTimeMillis();
     }
 
-//    UI enabled.
+    //    UI enabled.
     public FTP_Client(String ip, int port, String fileName, TextArea textArea) throws Exception {
 
         long start_time = System.currentTimeMillis();
-        Socket serverSock = new Socket(ip, port);
+        Socket serverSocket = new Socket(ip, port);
 
         textArea.setText("Connecting...");
-        Thread t = new Thread(new DataReceivingOperation(serverSock, fileName, textArea));
+        Thread t = new Thread(new FileReceiver(fileName, serverSocket, textArea));
         t.start();
         long termination_time = System.currentTimeMillis();
     }

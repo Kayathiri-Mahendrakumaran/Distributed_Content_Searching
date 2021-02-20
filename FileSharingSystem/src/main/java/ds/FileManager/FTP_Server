@@ -8,11 +8,10 @@ public class FTP_Server implements Runnable {
 
     private ServerSocket serverSocket;
     private Socket clientsocket;
-    private final Logger LOG = Logger.getLogger(FTPServer.class.getName());
+    private final Logger LOG = Logger.getLogger(FTP_Server.class.getName());
     private String userName;
 
-    public FTP_Server(int port, String userName) throws Exception {
-        // create socket
+    public FTP_Server(String userName, int port,) throws Exception {
         serverSocket = new ServerSocket(port);
         this.userName = userName;
     }
