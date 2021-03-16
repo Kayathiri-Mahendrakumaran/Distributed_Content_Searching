@@ -54,7 +54,7 @@ public class FileHandler {
 
         ArrayList<String> fileNames = new ArrayList<>();
 
-        //Get file from resources folder
+        //Get file from main.resources folder
         ClassLoader classLoader = getClass().getClassLoader();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
                 (classLoader.getResourceAsStream(FILE_NAMES)));

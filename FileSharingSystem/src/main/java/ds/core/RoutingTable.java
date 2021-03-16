@@ -20,18 +20,22 @@ public class RoutingTable {
     public String get_Address() {
         return address;
     }
+
     //get port
     public int get_Port() {
         return port;
     }
+
     //get neighbor list
     public ArrayList<Neighbor> get_Neighbours_list() {
         return neighbours_list;
     }
+
     //get neighbor count
     public synchronized int getCount() {
         return neighbours_list.size();
     }
+
     //add neighbor
     public synchronized int add_Neighbour(String address, int port, int clientPort) {
         //check the neighbor already exists
@@ -52,6 +56,7 @@ public class RoutingTable {
         LOG.fine("Neighbor is added => address:" + address + " port number:" + port);
         return neighbours_list.size();
     }
+
     //remove neighbor
     public synchronized int removeNeighbour(String address, int port) {
         Neighbor toRemove = null;
@@ -66,6 +71,7 @@ public class RoutingTable {
         }
         return 0;
     }
+
     //return as a string
     public synchronized String toString() {
         String data = "Address: " + address + ":" + port + "\n";
@@ -80,6 +86,7 @@ public class RoutingTable {
         data += "===========================" + "\n";
         return data;
     }
+
     //check whether it is a neighbor
     public boolean is_Neighbour(String address, int port) {
         for (Neighbor n: neighbours_list) {
