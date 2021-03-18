@@ -1,8 +1,8 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.BSServerClient.ChannelMessage;
-import main.java.ds.core.RoutingTable;
-import main.java.ds.core.TimeHandler;
+import  ds.BSServerClient.ChannelMessage;
+import  ds.core.RoutingTable;
+import  ds.core.TimeHandler;
 
 import java.util.concurrent.BlockingQueue;
 

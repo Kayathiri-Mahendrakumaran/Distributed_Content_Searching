@@ -1,4 +1,4 @@
-package main.java.ds.core;
+package  ds.core;
 
 import java.io.*;
 import java.util.*;

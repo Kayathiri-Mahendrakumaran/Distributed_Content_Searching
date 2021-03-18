@@ -1,4 +1,4 @@
-package main.java.ds.BSServerClient;
+package  ds.BSServerClient;
 
 public class ChannelMessage {
     private final String address;

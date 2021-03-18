@@ -1,11 +1,11 @@
-package main.java.ds.core;
+package  ds.core;
 
-import main.java.ds.Handlers.TimeoutCallback;
+import  ds.Handlers.*;
 
 public class CallbackMap {
-    private long timeoutTime;
+    public long timeoutTime;
     private TimeoutCallback callback;
-    private long timeout;
+    public long timeout;
 
     public CallbackMap(long timeout, TimeoutCallback callback) {
         this.timeout = timeout;

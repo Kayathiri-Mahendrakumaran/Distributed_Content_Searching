@@ -1,4 +1,4 @@
-package main.java.ds.BSServerClient;
+package  ds.BSServerClient;
 
 
 import java.io.IOException;

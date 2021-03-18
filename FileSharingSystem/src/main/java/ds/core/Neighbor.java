@@ -1,4 +1,4 @@
-package main.java.ds.core;
+package  ds.core;
 
 public class Neighbor {
 

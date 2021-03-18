@@ -1,6 +1,6 @@
-package  main.java.ds.handlers;
+package   ds.Handlers;
 
-import  main.java.ds.core.MessageBroker;
+import   ds.core.MessageBroker;
 
 import java.util.logging.Logger;
 

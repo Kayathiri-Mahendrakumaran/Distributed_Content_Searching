@@ -1,6 +1,6 @@
-package main.java.ds.BSServerClient;
+package ds.BSServerClient;
 
-import main.java.ds.Constants;
+import  ds.Constants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -13,55 +13,155 @@ import java.util.logging.Logger;
 
 public class BSServerClient {
 
-    private final Logger LOGGER = Logger.getLogger(BSServerClient.class.getName());
+    private final Logger LOG = Logger.getLogger(BSServerClient.class.getName());
 
-    private int BS_Server_Port;
-    private String BS_Server_IPAddress;
-
-    private final String REG_FORMAT = "REG %s %s %s";
-    private final String UNREG_FORMAT = "UNREG %s %s %s";
-    private final String MSG_FORMAT = "%04d %s";
-
-    private static final String REGOK = "REGOK";
-    private static final String UNROK = "UNROK";
-    private static final int TIMEOUT_REG = 10000;
+    private String BS_IPAddress;
+    private int BS_Port;
 
     private DatagramSocket datagramSocket;
 
-    public BSServerClient() throws Exception{
+    public BSServerClient() throws IOException{
 
         datagramSocket = new DatagramSocket();
 
-        Properties BS_Server_Properties = new Properties();
-
-        try {
-            BS_Server_Properties.load(getClass().getClassLoader().getResourceAsStream(
-                    "Bootstrap.properties"));
-
-        } catch (Exception e) {
-            LOGGER.severe("Could not load " + "Bootstrap.properties");
-            throw new RuntimeException("Could not load " + "Bootstrap.properties");
-        }
-
-        this.BS_Server_IPAddress = BS_Server_Properties.getProperty("bootstrap.ip");
-        this.BS_Server_Port = Integer.parseInt(BS_Server_Properties.getProperty("bootstrap.port"));
+        readProperties();
     }
 
     public List<InetSocketAddress> register(String userName, String ipAddress, int port) throws IOException {
 
-        String request = String.format(REG_FORMAT, ipAddress, port, userName);
+        String request = String.format(Constants.REG_FORMAT, ipAddress, port, userName);
 
-        request = String.format(MSG_FORMAT, request.length() + 5, request);
+        request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
 
         return  processBSResponse(sendOrReceive(request));
 
     }
 
+    public boolean unRegister(String userName, String ipAddress, int port) throws IOException{
+
+        String request = String.format(Constants.UNREG_FORMAT, ipAddress, port, userName);
+
+        request = String.format(Constants.MSG_FORMAT, request.length() + 5, request);
+
+        return  processBSUnregisterResponse(sendOrReceive(request));
+
+    }
+
+    private List<InetSocketAddress> processBSResponse(String response){
+
+        StringTokenizer stringToken = new StringTokenizer(response, " ");
+
+        String length = stringToken.nextToken();
+
+        String status = stringToken.nextToken();
+
+        if (!Constants.REGOK.equals(status)) {
+            throw new IllegalStateException(Constants.REGOK + " not received");
+        }
+
+        int nodesCount = Integer.parseInt(stringToken.nextToken());
+
+        List<InetSocketAddress> gNodes = null;
+
+        switch (nodesCount) {
+            case 0:
+                LOG.fine("Successful - No other nodes in the network");
+                gNodes = new ArrayList<>();
+                break;
+
+            case 1:
+                LOG.fine("No of nodes found : 1");
+
+                gNodes = new ArrayList<>();
+
+                while (stringToken.hasMoreTokens()) {
+                    gNodes.add(new InetSocketAddress(stringToken.nextToken(),
+                            Integer.parseInt(stringToken.nextToken())));
+                }
+                break;
+
+            case 2:
+                LOG.fine("No of nodes found : 2");
+
+                gNodes = new ArrayList<>();
+
+                while (stringToken.hasMoreTokens()) {
+                    gNodes.add(new InetSocketAddress(stringToken.nextToken(),
+                            Integer.parseInt(stringToken.nextToken())));
+                }
+                break;
+
+            case 9999:
+                LOG.severe("Failed. There are errors in your command");
+                break;
+            case 9998:
+                LOG.severe("Failed, already registered to you, unRegister first");
+                break;
+            case 9997:
+                LOG.severe("Failed, registered to another user, try a different IP and port");
+                break;
+            case 9996:
+                LOG.severe("Failed, can’t register. BS full.");
+                break;
+            default:
+                throw new IllegalStateException("Invalid status code");
+        }
+
+        return gNodes;
+    }
+
+    private boolean processBSUnregisterResponse(String response){
+
+        StringTokenizer stringTokenizer = new StringTokenizer(response, " ");
+
+        String length = stringTokenizer.nextToken();
+        String status = stringTokenizer.nextToken();
+
+        if (!Constants.UNROK.equals(status)) {
+            throw new IllegalStateException(Constants.UNROK + " not received");
+        }
+
+        int code = Integer.parseInt(stringTokenizer.nextToken());
+
+        switch (code) {
+            case 0:
+                LOG.fine("Successfully unregistered");
+                return true;
+
+            case 9999:
+                LOG.severe("Error while un-registering. " +
+                        "IP and port may not be in the registry or command is incorrect");
+            default:
+                return false;
+        }
+    }
+
+    private void readProperties() {
+        Properties bsProperties = new Properties();
+        try {
+            bsProperties.load(getClass().getClassLoader().getResourceAsStream(
+                    Constants.BS_PROPERTIES));
+
+        } catch (IOException e) {
+            LOG.severe("Could not open " + Constants.BS_PROPERTIES);
+            throw new RuntimeException("Could not open " + Constants.BS_PROPERTIES);
+        } catch (NullPointerException e) {
+            LOG.severe("Could not find " + Constants.BS_PROPERTIES);
+            throw new RuntimeException("Could not find " + Constants.BS_PROPERTIES);
+        }
+
+        this.BS_IPAddress = bsProperties.getProperty("bootstrap.ip");
+        this.BS_Port = Integer.parseInt(bsProperties.getProperty("bootstrap.port"));
+
+        bsProperties.getProperty("bootstrap.ip");
+
+    }
+
     private String sendOrReceive(String request) throws IOException {
         DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
-                request.length(), InetAddress.getByName(BS_Server_IPAddress), BS_Server_Port);
+                request.length(), InetAddress.getByName(BS_IPAddress), BS_Port);
 
-        datagramSocket.setSoTimeout(TIMEOUT_REG);
+        datagramSocket.setSoTimeout(Constants.TIMEOUT_REG);
 
         datagramSocket.send(sendingPacket);
 
@@ -73,110 +173,4 @@ public class BSServerClient {
 
         return new String(received.getData(), 0, received.getLength());
     }
-
-    public boolean unRegister(String userName, String ipAddress, int port) throws IOException{
-
-        String request = String.format(UNREG_FORMAT, ipAddress, port, userName);
-
-        request = String.format(MSG_FORMAT, request.length() + 5, request);
-
-        return  processBSUnregisterResponse(sendOrReceive(request));
-
-    }
-
-    private List<InetSocketAddress> processBSResponse(String response) {
-
-        StringTokenizer stringToken = new StringTokenizer(response, " ");
-
-        String status = stringToken.nextToken();
-
-        if (!REGOK.equals(status)) {
-            throw new IllegalStateException(REGOK + " not received");
-        }
-
-        int nodesCount = Integer.parseInt(stringToken.nextToken());
-
-        List<InetSocketAddress> gNodes = null;
-
-
-        if (nodesCount == 0) {
-            LOGGER.severe("Successful - No other nodes in the network");
-            gNodes = new ArrayList<>();
-        }
-
-        else if ( nodesCount == 1){
-            LOGGER.severe("No of nodes found : 1");
-
-            gNodes = new ArrayList<>();
-
-            while (stringToken.hasMoreTokens()) {
-                gNodes.add(new InetSocketAddress(stringToken.nextToken(),
-                        Integer.parseInt(stringToken.nextToken())));
-            }
-        }
-
-        else if ( nodesCount == 2){
-            LOGGER.fine("No of nodes found : 2");
-
-            gNodes = new ArrayList<>();
-
-            while (stringToken.hasMoreTokens()) {
-                gNodes.add(new InetSocketAddress(stringToken.nextToken(),
-                        Integer.parseInt(stringToken.nextToken())));
-            }
-        }
-
-        else if (  nodesCount == 9999){
-            LOGGER.severe("Failed. There are errors in your command");
-        }
-        else if ( nodesCount == 9998){
-            LOGGER.severe("Failed, already registered to you, unRegister first");
-        }
-        else if ( nodesCount == 9997){
-            LOGGER.severe("Failed, registered to another user, try a different IP and port");
-        }
-        else if (nodesCount == 9996){
-            LOGGER.severe("Failed, can’t register. BS full.");
-        }
-        else{
-            throw new IllegalStateException("Invalid status code");
-        }
-
-
-        return gNodes;
-    }
-
-    private boolean processBSUnregisterResponse(String response){
-
-        StringTokenizer stringTokenizer = new StringTokenizer(response, " ");
-
-        String status = stringTokenizer.nextToken();
-
-        if (!UNROK.equals(status)) {
-            throw new IllegalStateException(UNROK + " not received");
-        }
-
-        int code = Integer.parseInt(stringTokenizer.nextToken());
-
-
-            if (code == 0){
-                LOGGER.severe("Successfully unregistered");
-                return true;
-            }
-
-
-            else if (code == 9999){
-                LOGGER.severe("Error while un-registering. " +
-                        "IP and port may not be in the registry or command is incorrect");
-                return false;
-            }
-
-            else{
-                return false;
-            }
-    }
-
-
-
-
 }

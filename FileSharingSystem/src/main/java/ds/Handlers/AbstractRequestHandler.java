@@ -1,6 +1,6 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.BSServerClient.ChannelMessage;
+import  ds.BSServerClient.ChannelMessage;
 
 public interface AbstractRequestHandler extends AbstractMessageHandler {
 

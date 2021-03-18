@@ -1,3 +1,5 @@
+package  ds.FileManager;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,7 +13,7 @@ public class FTP_Server implements Runnable {
     private final Logger LOG = Logger.getLogger(FTP_Server.class.getName());
     private String userName;
 
-    public FTP_Server(String userName, int port,) throws Exception {
+    public FTP_Server(String userName, int port) throws Exception {
         serverSocket = new ServerSocket(port);
         this.userName = userName;
     }
@@ -29,7 +31,7 @@ public class FTP_Server implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Thread t = new Thread(new DataSendingOperation(clientsocket, userName));
+            Thread t = new Thread(new FileSender(clientsocket, userName));
             t.start();
         }
     }

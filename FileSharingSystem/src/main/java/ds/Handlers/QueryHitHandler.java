@@ -1,11 +1,11 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.Constants;
-import main.java.ds.BSServerClient.ChannelMessage;
-import main.java.ds.core.RoutingTable;
-import main.java.ds.core.Result;
-import main.java.ds.core.TimeHandler;
-import main.java.ds.utils.StringEncoderDecoder;
+import  ds.Constants;
+import  ds.BSServerClient.ChannelMessage;
+import  ds.core.RoutingTable;
+import  ds.core.Result;
+import  ds.core.TimeHandler;
+import  ds.utils.StringEncoderDecoder;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;

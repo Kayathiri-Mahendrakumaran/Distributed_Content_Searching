@@ -1,7 +1,9 @@
-//import javafx.scene.control.TextArea;
+package  ds.FileManager;//import javafx.scene.control.TextArea;
 
 import java.net.Socket;
-import FileReceiver;
+import javafx.scene.control.TextArea;
+
+import  ds.FileManager.FileReceiver;
 
 public class FTP_Client {
 

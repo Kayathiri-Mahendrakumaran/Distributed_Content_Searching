@@ -1,9 +1,9 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.Constants;
-import main.java.ds.BSServerClient.ChannelMessage;
-import main.java.ds.core.RoutingTable;
-import main.java.ds.core.TimeHandler;
+import  ds.Constants;
+import  ds.BSServerClient.ChannelMessage;
+import  ds.core.RoutingTable;
+import  ds.core.TimeHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,7 +95,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                 if (routingTable.getCount() <= Constants.MIN_NEIGHBOURS) {
                     sendBPing(address, port);
                 }
-                this.routingTable.print();
+                this.routingTable.print_summary();
 
                 break;
             default:

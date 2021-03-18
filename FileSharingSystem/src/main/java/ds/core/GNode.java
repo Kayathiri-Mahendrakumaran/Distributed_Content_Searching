@@ -1,10 +1,10 @@
-package main.java.ds.core;
+package ds.core;
 
-import main.java.ds.Constants;
-import main.java.ds.BSServerClient.BSServerClient;
-import main.java.ds.FileManager.DataSendingOperation;
-import main.java.ds.FileManager.FTP_Client;
-import main.java.ds.FileManager.FTP_Server;
+import ds.Constants;
+import ds.BSServerClient.BSServerClient;
+import ds.FileManager.FileSender;
+import ds.FileManager.FTP_Client;
+import ds.FileManager.FTP_Server;
 
 import javafx.scene.control.TextArea;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class GNode {
     private int port;
     private MessageBroker messageBroker;
     private SearchManager searchManager;
-    private FTPServer ftpServer;
+    private FTP_Server ftpServer;
 
     public GNode (String userName) throws Exception {
 
@@ -38,8 +38,8 @@ public class GNode {
 
         this.userName = userName;
         this.port = getFreePort();
-        FileManager fileManager = FileManager.getInstance(userName);
-        this.ftpServer = new FTPServer(this.port + Constants.FTP_PORT_OFFSET, userName);
+        FileHandler fileManager = FileHandler.getInstance(userName);
+        this.ftpServer = new FTP_Server( userName,this.port + Constants.FTP_PORT_OFFSET);
         Thread t = new Thread(ftpServer);
         t.start();
 
@@ -100,9 +100,9 @@ public class GNode {
 
     public void getFile(int fileOption) {
         try {
-            SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+            Result fileDetail = this.searchManager.getFileDetails(fileOption);
             System.out.println("The file you requested is " + fileDetail.getFileName());
-            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), fileDetail.getTcpPort(),
+            FTP_Client ftpClient = new FTP_Client(fileDetail.getTcpPort(), fileDetail.getAddress(),
                     fileDetail.getFileName());
 
             System.out.println("Waiting for file download...");
@@ -114,9 +114,9 @@ public class GNode {
 
     public void getFile(int fileOption, TextArea textArea) {
         try {
-            SearchResult fileDetail = this.searchManager.getFileDetails(fileOption);
+            Result fileDetail = this.searchManager.getFileDetails(fileOption);
             System.out.println("The file you requested is " + fileDetail.getFileName());
-            FTPClient ftpClient = new FTPClient(fileDetail.getAddress(), fileDetail.getTcpPort(),
+            FTP_Client ftpClient = new FTP_Client(fileDetail.getAddress(), fileDetail.getTcpPort(),
                     fileDetail.getFileName(),textArea);
 
         } catch (Exception e) {
@@ -153,7 +153,7 @@ public class GNode {
     }
 
     public void printRoutingTable(){
-        this.messageBroker.getRoutingTable().print();
+        this.messageBroker.getRoutingTable().print_summary();
     }
 
     public String getRoutingTable() {

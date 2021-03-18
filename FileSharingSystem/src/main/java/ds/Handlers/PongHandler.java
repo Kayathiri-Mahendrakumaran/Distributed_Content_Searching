@@ -1,9 +1,9 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.Constants;
-import main.java.ds.BSServerClient.ChannelMessage;
-import main.java.ds.ds.core.RoutingTable;
-import main.java.ds.core.TimeHandler;
+import  ds.Constants;
+import  ds.BSServerClient.ChannelMessage;
+import  ds.core.RoutingTable;
+import  ds.core.TimeHandler;
 
 import java.util.StringTokenizer;
 import java.util.concurrent.BlockingQueue;
@@ -46,11 +46,11 @@ public class PongHandler implements AbstractResponseHandler{
         int port = Integer.parseInt(stringToken.nextToken().trim());
         if(keyword.equals("BPONG")) {
             if(routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
-                this.routingTable.addNeighbour(address, port, message.getPort());
+                this.routingTable.add_Neighbour(address, port, message.getPort());
             }
         } else {
             this.timeHandler.registering_Response(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
-            this.routingTable.addNeighbour(address, port, message.getPort());
+            this.routingTable.add_Neighbour(address, port, message.getPort());
         }
 
     }

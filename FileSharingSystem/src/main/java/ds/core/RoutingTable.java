@@ -1,6 +1,6 @@
-package main.java.ds.core;
+package  ds.core;
 
-import main.java.ds.Constants;
+import  ds.Constants;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;

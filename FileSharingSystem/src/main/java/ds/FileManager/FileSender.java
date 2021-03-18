@@ -1,3 +1,7 @@
+package  ds.FileManager;
+
+import  ds.core.FileHandler;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -7,7 +11,7 @@ public class FileSender implements Runnable {
     private Socket clientSocket;
     private BufferedReader in = null;
 
-    private final Logger LOG = Logger.getLogger(DataSendingOperation.class.getName());
+    private final Logger LOG = Logger.getLogger(FileSender.class.getName());
 
     private String userName;
 
@@ -25,7 +29,7 @@ public class FileSender implements Runnable {
             String fileName = dIn.readUTF();
 
             if (fileName != null) {
-                sendFile(FileManager.getInstance("").getFile(fileName));
+                sendFile(FileHandler.getInstance("").getFile(fileName));
             }
             in.close();
         } catch (IOException e) {

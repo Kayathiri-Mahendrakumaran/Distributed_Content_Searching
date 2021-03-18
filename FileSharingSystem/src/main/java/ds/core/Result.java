@@ -1,6 +1,6 @@
-package main.java.ds.core;
+package  ds.core;
 
-import main.java.ds.Constants;
+import  ds.Constants;
 
 public class Result {
     private String fileName;

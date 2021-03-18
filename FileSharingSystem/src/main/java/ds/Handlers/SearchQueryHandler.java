@@ -1,12 +1,12 @@
-package main.java.ds.handlers;
+package  ds.Handlers;
 
-import main.java.ds.Constants;
-import main.java.ds.BSServerClient.ChannelMessage;
-import main.java.ds.core.FileHandler;
-import main.java.ds.core.Neighbor;
-import main.java.ds.core.RoutingTable;
-import main.java.ds.core.TimeHandler;
-import main.java.ds.utils.StringEncoderDecoder;
+import  ds.Constants;
+import  ds.BSServerClient.ChannelMessage;
+import  ds.core.FileHandler;
+import  ds.core.Neighbor;
+import  ds.core.RoutingTable;
+import  ds.core.TimeHandler;
+import  ds.utils.StringEncoderDecoder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -127,8 +127,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
             for(Neighbor neighbour: neighbours){
 
                 //skip sending search query to the same node again
-                if (neighbour.getAddress().equals(message.getAddress())
-                        && neighbour.getClientPort() == message.getPort()) {
+                if (neighbour.get_Address().equals(message.getAddress())
+                        && neighbour.get_ClientPort() == message.getPort()) {
                     continue;
                 }
 
@@ -140,8 +140,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
                 String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
 
-                ChannelMessage queryMessage = new ChannelMessage(neighbour.getAddress(),
-                        neighbour.getPort(),
+                ChannelMessage queryMessage = new ChannelMessage(neighbour.get_Address(),
+                        neighbour.get_Port(),
                         rawMessage);
 
                 this.sendRequest(queryMessage);

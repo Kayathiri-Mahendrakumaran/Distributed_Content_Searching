@@ -1,8 +1,8 @@
-package main.java.ds.core;
+package  ds.core;
 
-import main.java.ds.Constants;
-import main.java.ds.utils.ConsoleTable;
-import main.java.ds.handlers.QueryHitHandler;
+import  ds.Constants;
+import  ds.utils.ConsoleTable;
+import  ds.Handlers.QueryHitHandler;
 
 import java.util.*;
 
@@ -10,7 +10,7 @@ class SearchManager {
 
     private MessageBroker messageBroker;
 
-    private Map<Integer, SearchResult> fileDownloadOptions;
+    private Map<Integer, Result> fileDownloadOptions;
 
     SearchManager(MessageBroker messageBroker) {
         this.messageBroker = messageBroker;
@@ -18,11 +18,11 @@ class SearchManager {
 
     int doSearch(String keyword) {
 
-        Map<String, SearchResult> searchResults
-                = new HashMap<String, SearchResult>();
+        Map<String, Result> searchResults
+                = new HashMap<String, Result>();
 
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
-        queryHitHandler.setSearchResutls(searchResults);
+        queryHitHandler.setSearchResult(searchResults);
         queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
 
         this.messageBroker.doSearch(keyword);
@@ -43,11 +43,11 @@ class SearchManager {
 
     List<String> doUISearch(String keyword) {
 
-        Map<String, SearchResult> searchResults
-                = new HashMap<String, SearchResult>();
+        Map<String, Result> searchResults
+                = new HashMap<String, Result>();
 
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
-        queryHitHandler.setSearchResutls(searchResults);
+        queryHitHandler.setSearchResult(searchResults);
         queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
 
         this.messageBroker.doSearch(keyword);
@@ -65,10 +65,10 @@ class SearchManager {
 
         int fileIndex = 1;
 
-        this.fileDownloadOptions = new HashMap<Integer, SearchResult>();
+        this.fileDownloadOptions = new HashMap<Integer, Result>();
 
         for (String s : searchResults.keySet()) {
-            SearchResult searchResult = searchResults.get(s);
+            Result searchResult = searchResults.get(s);
             String temp = "" + searchResult.getFileName() + "\t" +
                     searchResult.getAddress() + ":" + searchResult.getPort() + "\t" +
                     searchResult.getHops() + "\t" + searchResult.getTimeElapsed() + "ms";
@@ -85,10 +85,10 @@ class SearchManager {
     private void clearSearchResults() {
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
 
-        queryHitHandler.setSearchResutls(null);
+        queryHitHandler.setSearchResult(null);
     }
 
-    private void printSearchResults(Map<String, SearchResult> searchResults) {
+    private void printSearchResults(Map<String, Result> searchResults) {
 
         System.out.println("\nFile search results : ");
 
@@ -103,10 +103,10 @@ class SearchManager {
 
         int fileIndex = 1;
 
-        this.fileDownloadOptions = new HashMap<Integer, SearchResult>();
+        this.fileDownloadOptions = new HashMap<Integer, Result>();
 
         for (String s : searchResults.keySet()) {
-            SearchResult searchResult = searchResults.get(s);
+            Result searchResult = searchResults.get(s);
             this.fileDownloadOptions.put(fileIndex, searchResult);
 
             ArrayList<String> row1 = new ArrayList<String>();
@@ -132,7 +132,7 @@ class SearchManager {
 
     }
 
-    public SearchResult getFileDetails(int fileIndex) {
+    public Result getFileDetails(int fileIndex) {
         return this.fileDownloadOptions.get(fileIndex);
     }
 }

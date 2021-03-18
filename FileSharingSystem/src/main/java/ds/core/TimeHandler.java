@@ -1,7 +1,7 @@
-package main.java.ds.core;
+package  ds.core;
 
-import main.java.ds.Handlers.TimeoutCallback;
-import main.java.ds.core.CallbackMap;
+import  ds.Handlers.TimeoutCallback;
+import  ds.core.CallbackMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;

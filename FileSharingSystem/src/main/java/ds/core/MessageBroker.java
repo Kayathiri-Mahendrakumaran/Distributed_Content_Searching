@@ -1,6 +1,16 @@
-package main.java.ds.core;
+package  ds.core;
 
+import  ds.BSServerClient.ChannelMessage;
+import  ds.BSServerClient.UDPClient;
+import  ds.BSServerClient.UDPServer;
+import  ds.Handlers.*;
+
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class MessageBroker extends Thread{
@@ -32,6 +42,7 @@ public class MessageBroker extends Thread{
 
         channelOut = new LinkedBlockingQueue<ChannelMessage>();
         this.client = new UDPClient(channelOut, new DatagramSocket());
+        this.routingTable = new RoutingTable(address, port);
 
         this.pingHandler = PingHandler.getInstance();
         this.leaveHandler = LeaveHandler.getInstance();
@@ -41,7 +52,6 @@ public class MessageBroker extends Thread{
         this.searchQueryHandler = SearchQueryHandler.getInstance();
         this.searchQueryHandler.init(routingTable, channelOut, timeoutHandler);
 
-        this.routingTable = new RoutingTable(address, port);
 
         LOG.fine("Server got started ....");
         timeoutHandler.registering_Request(ping_messageID, ping_interval, new TimeoutCallback() {
@@ -101,7 +111,7 @@ public class MessageBroker extends Thread{
     }
 
     public void doSearch(String keyword){
-        this.searchQueryHandler.doSearch(keyword);
+        this.searchQueryHandler.search(keyword);
     }
 
     public BlockingQueue<ChannelMessage> getChannelIn() {
@@ -132,7 +142,7 @@ public class MessageBroker extends Thread{
     }
 
     public void sendLeave() {
-        this.leaveHandler.sendLeave();
+        this.leaveHandler.informLeave();
     }
 
     public String getFiles() {
