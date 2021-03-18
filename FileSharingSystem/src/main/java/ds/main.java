@@ -1,6 +1,6 @@
 package  ds;
 
-import ds.core.GNode;
+import ds.core.DSNode;
 
 import java.util.*;
 
@@ -8,8 +8,8 @@ public class main {
     public static void main(String[] args) {
         try{
             String uniqueID = UUID.randomUUID().toString();
-            GNode node = new GNode("node" + uniqueID);
-            node.init();
+            DSNode node = new DSNode("node" + uniqueID);
+            node.start();
 
             Scanner scanner = new Scanner(System.in);
 
@@ -28,7 +28,7 @@ public class main {
                     String searchQuery = scanner.nextLine();
 
                     if (searchQuery != null && !searchQuery.equals("")){
-                        int results = node.doSearch(searchQuery);
+                        int results = node.search(searchQuery);
 
                         if (results != 0){
 
@@ -62,7 +62,7 @@ public class main {
                     node.printRoutingTable();
 
                 } else if (commandOption.equals("3")){
-                    node.unRegister();
+                    node.unregisterDSNode();
                     System.exit(0);
 
                 } else {

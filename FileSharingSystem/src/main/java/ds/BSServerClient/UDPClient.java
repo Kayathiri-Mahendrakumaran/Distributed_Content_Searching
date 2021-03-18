@@ -10,6 +10,7 @@ public class UDPClient extends Thread {
     private final BlockingQueue<ChannelMessage> channelOut;
     private final DatagramSocket socket;
     private volatile boolean process = true;
+
     public UDPClient(BlockingQueue<ChannelMessage> channelOut, DatagramSocket socket) {
         this.channelOut = channelOut;
         this.socket = socket;
@@ -35,9 +36,6 @@ public class UDPClient extends Thread {
             }
         }
         socket.close();
-    }
-    public void stopProcessing() {
-        this.process = false;
     }
 }
 

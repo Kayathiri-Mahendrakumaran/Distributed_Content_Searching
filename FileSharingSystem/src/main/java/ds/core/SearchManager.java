@@ -1,6 +1,5 @@
 package  ds.core;
 
-import  ds.Constants;
 import  ds.utils.ConsoleTable;
 import  ds.Handlers.QueryHitHandler;
 
@@ -9,14 +8,14 @@ import java.util.*;
 class SearchManager {
 
     private MessageBroker messageBroker;
-
+    public static final int SEARCHING_TIMEOUT = 3000;
     private Map<Integer, Result> fileDownloadOptions;
 
     SearchManager(MessageBroker messageBroker) {
         this.messageBroker = messageBroker;
     }
 
-    int doSearch(String keyword) {
+    int searchFiles(String keyword) {
 
         Map<String, Result> searchResults
                 = new HashMap<String, Result>();
@@ -27,60 +26,21 @@ class SearchManager {
 
         this.messageBroker.doSearch(keyword);
 
-        System.out.println("Please be patient till the file results are returned ...");
+        System.out.println("Searching Please wait ...");
 
         try {
-            Thread.sleep(Constants.SEARCH_TIMEOUT);
+
+            Thread.sleep(SEARCHING_TIMEOUT);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        printSearchResults(searchResults);
+        print_search_results_table(searchResults);
         this.clearSearchResults();
         return fileDownloadOptions.size();
     }
 
-    List<String> doUISearch(String keyword) {
-
-        Map<String, Result> searchResults
-                = new HashMap<String, Result>();
-
-        QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
-        queryHitHandler.setSearchResult(searchResults);
-        queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
-
-        this.messageBroker.doSearch(keyword);
-
-        System.out.println("Please be patient till the file results are returned ...");
-
-        try {
-            Thread.sleep(Constants.SEARCH_TIMEOUT);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        List<String> results = new ArrayList<String>();
-
-        int fileIndex = 1;
-
-        this.fileDownloadOptions = new HashMap<Integer, Result>();
-
-        for (String s : searchResults.keySet()) {
-            Result searchResult = searchResults.get(s);
-            String temp = "" + searchResult.getFileName() + "\t" +
-                    searchResult.getAddress() + ":" + searchResult.getPort() + "\t" +
-                    searchResult.getHops() + "\t" + searchResult.getTimeElapsed() + "ms";
-            this.fileDownloadOptions.put(fileIndex, searchResult);
-            results.add(temp);
-            fileIndex++;
-        }
-
-        this.clearSearchResults();
-
-        return results;
-    }
 
     private void clearSearchResults() {
         QueryHitHandler queryHitHandler = QueryHitHandler.getInstance();
@@ -88,14 +48,14 @@ class SearchManager {
         queryHitHandler.setSearchResult(null);
     }
 
-    private void printSearchResults(Map<String, Result> searchResults) {
+    private void print_search_results_table(Map<String, Result> searchResults) {
 
-        System.out.println("\nFile search results : ");
+        System.out.println("\nFile search matching results : ");
 
         ArrayList<String> headers = new ArrayList<String>();
-        headers.add("Option No");
+        headers.add("User SelectOption");
         headers.add("FileName");
-        headers.add("Source");
+        headers.add("SourceIP");
         headers.add("QueryHit time (ms)");
         headers.add("Hop count");
 
@@ -122,17 +82,16 @@ class SearchManager {
         }
 
         if (fileDownloadOptions.size() == 0) {
-            System.out.println("Sorry. No files are found!!!");
-
+            System.out.println("No files matched the search!!!");
             return;
         }
 
-        ConsoleTable ct = new ConsoleTable(headers, content);
-        ct.printTable();
+        ConsoleTable consoleTable = new ConsoleTable(headers, content);
+        consoleTable.printTable();
 
     }
 
-    public Result getFileDetails(int fileIndex) {
+    public Result get_file_details(int fileIndex) {
         return this.fileDownloadOptions.get(fileIndex);
     }
 }

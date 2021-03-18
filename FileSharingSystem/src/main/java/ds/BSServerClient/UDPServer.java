@@ -1,10 +1,8 @@
 package  ds.BSServerClient;
 
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
 public class UDPServer extends Thread {
