@@ -10,18 +10,12 @@ public class FileReceiver implements Runnable {
     private BufferedReader bufferedReader = null;
     private String fileName;
     private Socket socket;
-    private TextArea textArea;
 
     public FileReceiver(String fileName, Socket serverSocket) {
         this.socket = serverSocket;
         this.fileName = fileName;
     }
 
-    public FileReceiver(String fileName, Socket serverSocket, TextArea textArea) {
-        this.textArea = textArea;
-        this.socket = serverSocket;
-        this.fileName = fileName;
-    }
 
     @Override
     public void run() {
@@ -56,11 +50,7 @@ public class FileReceiver implements Runnable {
             output.close();
             serverData.close();
 
-            if (textArea == null) {
-                System.out.println("File " + fileName + " successfully downloaded.");
-            } else {
-                this.textArea.setText("File " + fileName + " successfully downloaded.");
-            }
+            System.out.println("File " + fileName + " successfully downloaded.");
 
 
         } catch (IOException ex) {
