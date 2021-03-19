@@ -66,7 +66,7 @@ public class DSNode {
         List<InetSocketAddress> targets = null;
 
         try{
-            targets = this.bsServerClient.register(this.user_Name, this.ip_Address, this.port);
+            targets = this.bsServerClient.register( this.ip_Address, this.user_Name, this.port);
 
         } catch (IOException e) {
             LOGGER.severe("Registering DSNode failed");
