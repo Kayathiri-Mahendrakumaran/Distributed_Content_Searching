@@ -48,6 +48,7 @@ public class BSServerClient {
         this.BServer_Port = Integer.parseInt(bsProperties.getProperty("bootstrap.port"));
 
         bsProperties.getProperty("bootstrap.ip");
+        System.out.println("Connecting to BServer at "+this.BServer_IPAddress+":"+this.BServer_Port);
     }
 
     public List<InetSocketAddress> register(String ipAddress, String userName,  int port) throws IOException {
