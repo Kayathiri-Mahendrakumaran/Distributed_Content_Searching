@@ -1,7 +1,5 @@
 package  ds.FileManager;
 
-import javafx.scene.control.TextArea;
-
 import java.io.*;
 import java.net.Socket;
 
