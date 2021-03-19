@@ -1,9 +1,7 @@
-package  ds.FileManager;//import javafx.scene.control.TextArea;
+package  ds.FileManager;
 
 import java.net.Socket;
-import javafx.scene.control.TextArea;
 
-import  ds.FileManager.FileReceiver;
 
 public class FTP_Client {
 
@@ -17,15 +15,5 @@ public class FTP_Client {
         long termination_time = System.currentTimeMillis();
     }
 
-    //    UI enabled.
-    public FTP_Client(String ip, int port, String fileName, TextArea textArea) throws Exception {
 
-        long start_time = System.currentTimeMillis();
-        Socket serverSocket = new Socket(ip, port);
-
-        textArea.setText("Connecting...");
-        Thread t = new Thread(new FileReceiver(fileName, serverSocket, textArea));
-        t.start();
-        long termination_time = System.currentTimeMillis();
-    }
 }

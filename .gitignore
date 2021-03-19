@@ -6,3 +6,7 @@ FileSharingSystem/.idea/
 *.class
 
 FileSharingSystem/FileSharingSystem.iml
+
+FileSharingSystem/target/classes/
+
+FileSharingSystem/target/maven-status/maven-compiler-plugin/compile/default-compile/
