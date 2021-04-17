@@ -1,39 +1,43 @@
 package  ds.BSServerClient;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
+
 import java.net.DatagramSocket;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
+import java.net.DatagramPacket;
+
 
 public class UDPServer extends Thread {
+
     private final BlockingQueue<ChannelMessage> channelIn;
-    private final DatagramSocket socket;
+    private final DatagramSocket dgramSocket;
     private volatile boolean process = true;
-    public UDPServer(BlockingQueue<ChannelMessage> channelIn, DatagramSocket socket) {
+
+    public UDPServer(DatagramSocket socket, BlockingQueue<ChannelMessage> channelIn) {
+        this.dgramSocket = socket;
         this.channelIn = channelIn;
-        this.socket = socket;
     }
 
     @Override
     public void run() {
         while (process) {
-
             try {
                 byte[] response = new byte[65536];
-                DatagramPacket packet = new DatagramPacket(response, response.length);
-                socket.receive(packet);
-                String address = ((packet.getSocketAddress().toString()).substring(1)).split(":")[0];
-                int port = Integer.parseInt(((packet.getSocketAddress().toString()).substring(1)).split(":")[1]);
+                DatagramPacket dgramPacket = new DatagramPacket(response, response.length);
+                dgramSocket.receive(dgramPacket);
+
+                String address = ((dgramPacket.getSocketAddress().toString()).substring(1)).split(":")[0];
                 String body = new String(response, 0, response.length);
-                ChannelMessage message = new ChannelMessage(address, port, body);
+
+                int port = Integer.parseInt(((dgramPacket.getSocketAddress().toString()).substring(1)).split(":")[1]);
+
+                ChannelMessage message = new ChannelMessage(body, port, address);
                 channelIn.put(message);
+
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        socket.close();
-    }
-    public void stopProcessing() {
-        this.process = false;
+        dgramSocket.close();
     }
 }

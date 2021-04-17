@@ -38,8 +38,8 @@ public class MessageBroker extends Thread{
         channelOut = new LinkedBlockingQueue<ChannelMessage>();
         DatagramSocket socket = new DatagramSocket(port);
 
-        this.server = new UDPServer(channelIn, socket);
-        this.client = new UDPClient(channelOut, new DatagramSocket());
+        this.server = new UDPServer(socket, channelIn);
+        this.client = new UDPClient(new DatagramSocket(), channelOut);
 
         this.routingTable = new RoutingTable(port, address);
 
@@ -53,7 +53,7 @@ public class MessageBroker extends Thread{
 
 
         LOG.fine("Server got started ....");
-        timeoutHandler.registering_Request(ping_messageID, ping_interval, new TimeoutCallback() {
+        timeoutHandler.registering_Request(ping_messageID, new TimeoutCallback() {
             @Override
             public void onTimeout(String messageId) {
                 sendRoutinePing();
@@ -63,7 +63,7 @@ public class MessageBroker extends Thread{
             public void onResponse(String messageId) {
             }
 
-        });
+        }, ping_interval);
     }
 
     @Override

@@ -1,14 +1,14 @@
-package  ds.BSServerClient;
+package ds.BSServerClient;
 
 public class ChannelMessage {
-    private final String address;
-    private final int port;
     private final String message;
+    private final int port;
+    private final String address;
 
-    public ChannelMessage(String address, int port, String message) {
-        this.address = address;
-        this.port = port;
+    public ChannelMessage(String message, int port, String address) {
         this.message = message;
+        this.port = port;
+        this.address = address;
     }
 
     public int getPort() {
