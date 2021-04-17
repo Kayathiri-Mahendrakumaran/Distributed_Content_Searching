@@ -56,7 +56,7 @@ public class DSNode {
         List<InetSocketAddress> targets = this.registerDSNode();
         if(targets != null) {
             for (InetSocketAddress target: targets) {
-                messageBroker.sendPing(target.getAddress().toString().substring(1), target.getPort());
+                messageBroker.send_Ping(target.getPort(), target.getAddress().toString().substring(1));
             }
 
         }
@@ -88,7 +88,7 @@ public class DSNode {
     }
 
     public void printRoutingTable(){
-        this.messageBroker.getRoutingTable().print_summary();
+        this.messageBroker.get_RoutingTable().print_summary();
     }
 
     public int search(String keyword){
@@ -102,9 +102,9 @@ public class DSNode {
     public void getFile(int fileOption) {
         try {
             Result fileDetail = this.searchManager.get_file_details(fileOption);
-            System.out.println("The file you requested is " + fileDetail.getFileName());
-            FTP_Client ftpClient = new FTP_Client(fileDetail.getTcpPort(), fileDetail.getAddress(),
-                    fileDetail.getFileName());
+            System.out.println("The file you requested is " + fileDetail.get_FileName());
+            FTP_Client ftpClient = new FTP_Client(fileDetail.get_TcpPort(), fileDetail.get_Address(),
+                    fileDetail.get_FileName());
 
             System.out.println("Waiting for file download...");
             Thread.sleep(Constants.FILE_DOWNLOAD_TIMEOUT);

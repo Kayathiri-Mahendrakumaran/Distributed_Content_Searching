@@ -8,13 +8,15 @@ import java.util.logging.Logger;
 public class RoutingTable {
     private final Logger LOG = Logger.getLogger(RoutingTable.class.getName());
     private ArrayList<Neighbor> neighbours_list;
-    private final String address;
     private final int port;
+    private final String address;
+    // Constants
+    public static final int max_neighbors = 6;
 
-    public RoutingTable(String address, int port) {
-        this.address = address;
-        this.port = port;
+    public RoutingTable(int port, String address) {
         this.neighbours_list = new ArrayList<>();
+        this.port = port;
+        this.address = address;
     }
     //get address
     public String get_Address() {
@@ -37,20 +39,20 @@ public class RoutingTable {
     }
 
     //add neighbor
-    public synchronized int add_Neighbour(String address, int port, int clientPort) {
+    public synchronized int add_Neighbour(int port, int clientPort, String address) {
         //check the neighbor already exists
-        for (Neighbor n: neighbours_list) {
-            if (n.check_same(address, port)){
-                n.Ping();
+        for (Neighbor neighbor: neighbours_list) {
+            if (neighbor.check_same(port, address)){
+                neighbor.Ping();
                 return neighbours_list.size();
             }
         }
         //check max num of neighbour
-        if (neighbours_list.size() >= Constants.MAX_NEIGHBOURS) {
+        if (neighbours_list.size() >= max_neighbors) {
             return 0;
         }
         //creating new neighbor
-        Neighbor newN = new Neighbor(address, port, clientPort);
+        Neighbor newN = new Neighbor(port, clientPort, address);
         neighbours_list.add(newN);
 
         LOG.fine("Neighbor is added => address:" + address + " port number:" + port);
@@ -58,17 +60,20 @@ public class RoutingTable {
     }
 
     //remove neighbor
-    public synchronized int removeNeighbour(String address, int port) {
-        Neighbor toRemove = null;
-        for (Neighbor n: neighbours_list) {
-            if (n.check_same(address, port)) {
-                toRemove = n;
+    public synchronized int remove_Neighbour(int port, String address) {
+        Neighbor n_Remove = null;
+        for (Neighbor neighbour: neighbours_list) {
+            if (neighbour.check_same(port, address)) {
+                n_Remove = neighbour;
             }
         }
-        if (toRemove != null) {
-            neighbours_list.remove(toRemove);
+        if (n_Remove != null) {
+            neighbours_list.remove(n_Remove);
+            LOG.fine("Neighbor is removed => address:" + address + " port number:" + port);
+            // return the size of the neighbors
             return neighbours_list.size();
         }
+        // there is no related neighbour
         return 0;
     }
 
@@ -90,7 +95,7 @@ public class RoutingTable {
     //check whether it is a neighbor
     public boolean is_Neighbour(String address, int port) {
         for (Neighbor n: neighbours_list) {
-            if (n.check_same(address, port)) {
+            if (n.check_same(port, address)) {
                 return  true;
             }
         }
@@ -100,7 +105,7 @@ public class RoutingTable {
     public ArrayList<String> getOtherNeighbours(String address, int port) {
         ArrayList<String> temp = new ArrayList<>();
         for (Neighbor n: neighbours_list) {
-            if(!n.check_same(address, port)) {
+            if(!n.check_same(port, address)) {
                 temp.add(n.toString());
             }
         }

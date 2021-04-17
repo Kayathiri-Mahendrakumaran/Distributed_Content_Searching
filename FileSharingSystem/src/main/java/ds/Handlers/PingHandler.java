@@ -91,7 +91,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                 break;
             case "LEAVE":
                 System.out.println("receiving leave");
-                this.routingTable.removeNeighbour(address, port);
+                this.routingTable.remove_Neighbour(port, address);
                 if (routingTable.getCount() <= Constants.MIN_NEIGHBOURS) {
                     sendBPing(address, port);
                 }
@@ -99,7 +99,7 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
 
                 break;
             default:
-                int result = this.routingTable.add_Neighbour(address, port, message.getPort());
+                int result = this.routingTable.add_Neighbour(port, message.getPort(), address);
 
                 if (result != 0) {
                     String payload = String.format(Constants.PONG_FORMAT,
@@ -185,9 +185,9 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
             pingFailureCount.put(messageId,pingFailureCount.get(messageId) + 1);
             if(pingFailureCount.get(messageId) >= Constants.PING_RETRY) {
                 LOG.fine("neighbour lost :( =>" + messageId);
-                routingTable.removeNeighbour(
-                        messageId.split(":")[1],
-                        Integer.valueOf(messageId.split(":")[2]));
+                routingTable.remove_Neighbour(
+                        Integer.valueOf(messageId.split(":")[2]),
+                        messageId.split(":")[1]);
             }
 
             if (routingTable.getCount() < Constants.MIN_NEIGHBOURS) {

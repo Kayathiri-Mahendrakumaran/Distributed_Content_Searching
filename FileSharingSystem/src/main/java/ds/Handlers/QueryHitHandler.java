@@ -62,7 +62,7 @@ public class QueryHitHandler implements AbstractResponseHandler {
             if (this.searchResult != null){
                 if(!this.searchResult.containsKey(addressKey + fileName)){
                     this.searchResult.put(addressKey + fileName,
-                            new Result(fileName, address, port, hops,
+                            new Result(address, fileName, port, hops,
                                     (System.currentTimeMillis() - searchInitiatedTime)));
 
                 }

@@ -46,11 +46,11 @@ public class PongHandler implements AbstractResponseHandler{
         int port = Integer.parseInt(stringToken.nextToken().trim());
         if(keyword.equals("BPONG")) {
             if(routingTable.getCount() < Constants.MIN_NEIGHBOURS) {
-                this.routingTable.add_Neighbour(address, port, message.getPort());
+                this.routingTable.add_Neighbour(port, message.getPort(), address);
             }
         } else {
             this.timeHandler.registering_Response(String.format(Constants.PING_MESSAGE_ID_FORMAT,address,port));
-            this.routingTable.add_Neighbour(address, port, message.getPort());
+            this.routingTable.add_Neighbour(port, message.getPort(), address);
         }
 
     }

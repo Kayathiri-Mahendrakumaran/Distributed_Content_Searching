@@ -10,27 +10,24 @@ public class FileHandler {
     private Map<String, String> files_map;
 
     private String user_name;
-
-    private String fileSeparator = System.getProperty("file.separator");
     private String rootDirectory;
+    private String separator = System.getProperty("file.separator");
 
     public static final String FILE_NAMES = "FileNames.txt";
 
     private final Logger LOG = Logger.getLogger(FileHandler.class.getName());
 
     private FileHandler(String userName) {
-        files_map = new HashMap<>();
-
         this.user_name = userName;
-        this.rootDirectory =   "." + fileSeparator + this.user_name;
+        files_map = new HashMap<>();
+        this.rootDirectory =   "." + separator + this.user_name;
 
-        ArrayList<String> fullList = loadFileNames();
+        ArrayList<String> files = loadFileNames();
 
         Random r = new Random();
 
-        // doubt
         for (int i = 0; i < 5; i++){
-            files_map.put(fullList.get(r.nextInt(fullList.size())), "");
+            files_map.put(files.get(r.nextInt(files.size())), "");
         }
 
         createAllFiles();
@@ -58,19 +55,14 @@ public class FileHandler {
         ClassLoader classLoader = getClass().getClassLoader();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader
                 (classLoader.getResourceAsStream(FILE_NAMES)));
-
         try {
-
             for (String line; (line = bufferedReader.readLine()) != null;) {
                 fileNames.add(line);
             }
-
             bufferedReader.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return fileNames;
     }
 
@@ -89,7 +81,7 @@ public class FileHandler {
         for (String fileName: files_map.keySet()) {
             System.out.println(fileName);
             try {
-                String absoluteFilePath = this.rootDirectory + fileSeparator + fileName;
+                String absoluteFilePath = this.rootDirectory + separator + fileName;
                 File file = new File(absoluteFilePath);
                 file.getParentFile().mkdir();
                 if (file.createNewFile()) {
@@ -105,7 +97,7 @@ public class FileHandler {
     }
 
     public File getFile(String fileName) {
-        File file = new File(rootDirectory + fileSeparator + fileName);
+        File file = new File(rootDirectory + separator + fileName);
         return file;
     }
 

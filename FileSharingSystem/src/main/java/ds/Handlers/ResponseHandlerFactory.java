@@ -14,59 +14,59 @@ public class ResponseHandlerFactory {
             case "PING":
                 AbstractResponseHandler pingHandler = PingHandler.getInstance();
                 pingHandler.init(
-                        messageBroker.getRoutingTable(),
+                        messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager()
+                        messageBroker.get_TimeoutManager()
                 );
                 return pingHandler;
 
             case "BPING":
                 AbstractResponseHandler bPingHandler = PingHandler.getInstance();
                 bPingHandler.init(
-                        messageBroker.getRoutingTable(),
+                        messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager()
+                        messageBroker.get_TimeoutManager()
                 );
                 return bPingHandler;
 
             case "PONG":
                 AbstractResponseHandler pongHandler = PongHandler.getInstance();
                 pongHandler.init(
-                        messageBroker.getRoutingTable(),
+                        messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager()
+                        messageBroker.get_TimeoutManager()
                 );
                 return pongHandler;
 
             case "BPONG":
                 AbstractResponseHandler bpongHandler = PongHandler.getInstance();
                 bpongHandler.init(
-                        messageBroker.getRoutingTable(),
+                        messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager()
+                        messageBroker.get_TimeoutManager()
                 );
                 return bpongHandler;
 
             case "SER":
                 AbstractResponseHandler searchQueryHandler = SearchQueryHandler.getInstance();
-                searchQueryHandler.init(messageBroker.getRoutingTable(),
+                searchQueryHandler.init(messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager());
+                        messageBroker.get_TimeoutManager());
                 return searchQueryHandler;
 
             case "SEROK":
                 AbstractResponseHandler queryHitHandler = QueryHitHandler.getInstance();
-                queryHitHandler.init(messageBroker.getRoutingTable(),
+                queryHitHandler.init(messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager());
+                        messageBroker.get_TimeoutManager());
                 return queryHitHandler;
 
             case "LEAVE":
                 AbstractResponseHandler leaveHandler = PingHandler.getInstance();
                 leaveHandler.init(
-                        messageBroker.getRoutingTable(),
+                        messageBroker.get_RoutingTable(),
                         messageBroker.getChannelOut(),
-                        messageBroker.getTimeoutManager()
+                        messageBroker.get_TimeoutManager()
                 );
                 return leaveHandler;
             default:

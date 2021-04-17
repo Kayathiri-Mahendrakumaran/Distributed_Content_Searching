@@ -16,16 +16,15 @@ import java.util.logging.Logger;
 public class MessageBroker extends Thread{
     private final Logger LOG = Logger.getLogger(MessageBroker.class.getName());
 
-    private volatile boolean process = true;
+    private volatile boolean action = true;
     public static final int ping_interval = 8000;
     public static final String ping_messageID = "rPingMessage";
 
-
-    private final UDPServer server;
     private final UDPClient client;
+    private final UDPServer server;
 
-    private BlockingQueue<ChannelMessage> channelIn;
     private BlockingQueue<ChannelMessage> channelOut;
+    private BlockingQueue<ChannelMessage> channelIn;
 
     private FileHandler filehandler;
     private LeaveHandler leaveHandler;
@@ -36,19 +35,19 @@ public class MessageBroker extends Thread{
 
     public MessageBroker(String address, int port) throws SocketException {
         channelIn = new LinkedBlockingQueue<ChannelMessage>();
+        channelOut = new LinkedBlockingQueue<ChannelMessage>();
         DatagramSocket socket = new DatagramSocket(port);
 
         this.server = new UDPServer(channelIn, socket);
-
-        channelOut = new LinkedBlockingQueue<ChannelMessage>();
         this.client = new UDPClient(channelOut, new DatagramSocket());
-        this.routingTable = new RoutingTable(address, port);
 
-        this.pingHandler = PingHandler.getInstance();
+        this.routingTable = new RoutingTable(port, address);
+
         this.leaveHandler = LeaveHandler.getInstance();
+        this.pingHandler = PingHandler.getInstance();
         this.filehandler = FileHandler.getInstance("");
-        this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutHandler);
         this.leaveHandler.init(this.routingTable, this.channelOut, this.timeoutHandler);
+        this.pingHandler.init(this.routingTable, this.channelOut, this.timeoutHandler);
         this.searchQueryHandler = SearchQueryHandler.getInstance();
         this.searchQueryHandler.init(routingTable, channelOut, timeoutHandler);
 
@@ -71,28 +70,25 @@ public class MessageBroker extends Thread{
     public void run(){
         this.server.start();
         this.client.start();
-        this.process();
+        this.initiate();
     }
 
-    public void process() {
-        while (process) {
+    public void initiate() {
+        while (action) {
             try {
                 ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
                 if (message != null) {
-                    LOG.info("Received Message: " + message.getMessage()
+                    LOG.info("Message Received => " + message.getMessage()
                             + " from: " + message.getAddress()
-                            + " port: " + message.getPort());
+                            + ":" + message.getPort());
 
                     AbstractResponseHandler abstractResponseHandler
                             = ResponseHandlerFactory.getResponseHandler(
                             message.getMessage().split(" ")[1],
-                            this
-                    );
-
+                            this);
                     if (abstractResponseHandler != null){
                         abstractResponseHandler.handleResponse(message);
                     }
-
                 }
                 timeoutHandler.remove_TimeOut_Messages();
             } catch (InterruptedException e) {
@@ -101,17 +97,13 @@ public class MessageBroker extends Thread{
         }
     }
 
-    public void stopProcessing() {
-        this.process = false;
-        server.stopProcessing();
-    }
+//    public void stopProcessing() {
+//        this.action = false;
+//        server.stopProcessing();
+//    }
 
-    public void sendPing(String address, int port) {
+    public void send_Ping(int port, String address) {
         this.pingHandler.sendPing(address, port);
-    }
-
-    public void doSearch(String keyword){
-        this.searchQueryHandler.search(keyword);
     }
 
     public BlockingQueue<ChannelMessage> getChannelIn() {
@@ -122,12 +114,16 @@ public class MessageBroker extends Thread{
         return channelOut;
     }
 
-    public TimeHandler getTimeoutManager() {
+    public RoutingTable get_RoutingTable() {
+        return routingTable;
+    }
+
+    public TimeHandler get_TimeoutManager() {
         return timeoutHandler;
     }
 
-    public RoutingTable getRoutingTable() {
-        return routingTable;
+    public void do_Search(String keyword){
+        this.searchQueryHandler.search(keyword);
     }
 
 
@@ -136,7 +132,7 @@ public class MessageBroker extends Thread{
         for (String n: neighbor_list) {
             String address = n.split(":")[0];
             int port = Integer.valueOf(n.split(":")[1]);
-            sendPing(address, port);
+            send_Ping(port, address);
 
         }
     }

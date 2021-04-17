@@ -24,7 +24,7 @@ class SearchManager {
         queryHitHandler.setSearchResult(searchResults);
         queryHitHandler.setSearchInitiatedTime(System.currentTimeMillis());
 
-        this.messageBroker.doSearch(keyword);
+        this.messageBroker.do_Search(keyword);
 
         System.out.println("Searching Please wait ...");
 
@@ -71,10 +71,10 @@ class SearchManager {
 
             ArrayList<String> row1 = new ArrayList<String>();
             row1.add("" + fileIndex);
-            row1.add(searchResult.getFileName());
-            row1.add(searchResult.getAddress() + ":" + searchResult.getPort());
-            row1.add("" + searchResult.getTimeElapsed());
-            row1.add("" + searchResult.getHops());
+            row1.add(searchResult.get_FileName());
+            row1.add(searchResult.get_Address() + ":" + searchResult.get_Port());
+            row1.add("" + searchResult.get_TimeElapsed());
+            row1.add("" + searchResult.get_Hops());
 
             content.add(row1);
 
