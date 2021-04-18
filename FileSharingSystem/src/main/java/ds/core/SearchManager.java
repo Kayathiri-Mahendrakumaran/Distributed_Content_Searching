@@ -3,7 +3,10 @@ package  ds.core;
 import  ds.utils.ConsoleTable;
 import  ds.Handlers.QueryHitHandler;
 
+import java.io.FileWriter;
 import java.util.*;
+import java.io.File;  // Import the File class
+import java.io.IOException;  // Import the IOException class to handle errors
 
 class SearchManager {
 
@@ -64,19 +67,19 @@ class SearchManager {
         int fileIndex = 1;
 
         this.fileDownloadOptions = new HashMap<Integer, Result>();
-
+        String result = "";
         for (String s : searchResults.keySet()) {
             Result searchResult = searchResults.get(s);
             this.fileDownloadOptions.put(fileIndex, searchResult);
-
             ArrayList<String> row1 = new ArrayList<String>();
             row1.add("" + fileIndex);
             row1.add(searchResult.get_FileName());
             row1.add(searchResult.get_Address() + ":" + searchResult.get_Port());
             row1.add("" + searchResult.get_TimeElapsed());
             row1.add("" + searchResult.get_Hops());
-
+            String temp = row1.get(0)+" "+ row1.get(1)+" "+row1.get(2)+" "+row1.get(3)+" "+row1.get(4)+ "\n";
             content.add(row1);
+            result += temp;
 
             fileIndex++;
         }
@@ -88,6 +91,16 @@ class SearchManager {
 
         ConsoleTable consoleTable = new ConsoleTable(headers, content);
         consoleTable.printTable();
+        String s = content.toString();
+        try {
+            FileWriter myWriter = new FileWriter("result.txt", true);
+            myWriter.write(result);
+            myWriter.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
     }
 

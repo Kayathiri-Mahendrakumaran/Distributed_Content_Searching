@@ -38,6 +38,7 @@ public class DSNode {
         this.user_Name = user_Name;
 
         this.ftpServer = new FTP_Server(user_Name,this.port + Constants.FTP_PORT_OFFSET);
+        FileHandler fileManager = FileHandler.getInstance(user_Name);
         Thread t = new Thread(ftpServer);
         t.start();
         this.messageBroker = new MessageBroker(ip_Address, port);

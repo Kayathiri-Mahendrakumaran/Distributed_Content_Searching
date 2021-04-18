@@ -46,7 +46,7 @@ public class Neighbor {
     }
     //get total address as string
     public String toString() {
-        String string = this.address + "-" + this.port_num;
+        String string = this.address + ":" + this.port_num;
         return string;
     }
 }
