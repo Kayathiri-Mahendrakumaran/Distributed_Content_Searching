@@ -38,7 +38,7 @@ public class LeaveHandler implements AbstractRequestHandler {
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
         ArrayList<Neighbor> neighbours = routingTable.get_Neighbours_list();
         for (Neighbor n: neighbours) {
-            ChannelMessage message = new ChannelMessage(n.get_Address(), n.get_Port(),rawMessage);
+            ChannelMessage message = new ChannelMessage(rawMessage, n.get_Port(), n.get_Address());
             sendRequest(message);
         }
 

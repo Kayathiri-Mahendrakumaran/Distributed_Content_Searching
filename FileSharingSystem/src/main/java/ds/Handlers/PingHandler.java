@@ -77,8 +77,8 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                                 this.routingTable.get_Address(), this.routingTable.get_Port());
 
                         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-                        ChannelMessage outGoingMsg = new ChannelMessage(address,
-                                port, rawMessage);
+                        ChannelMessage outGoingMsg = new ChannelMessage(rawMessage, port, address
+                        );
                         this.sendRequest(outGoingMsg);
                     } else {
                         //otherwise send it to the neighbours
@@ -106,8 +106,8 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                             this.routingTable.get_Address(), this.routingTable.get_Port());
 
                     String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
-                    ChannelMessage outGoingMsg = new ChannelMessage(address,
-                            port, rawMessage);
+                    ChannelMessage outGoingMsg = new ChannelMessage(rawMessage, port, address
+                    );
                     this.sendRequest(outGoingMsg);
                 }
                 break;
@@ -120,15 +120,14 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
                 this.routingTable.get_Address(),
                 this.routingTable.get_Port());
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
-        ChannelMessage message = new ChannelMessage(address, port,rawMessage);
+        ChannelMessage message = new ChannelMessage(rawMessage, port, address);
         this.pingFailureCount.putIfAbsent(
                 String.format(Constants.PING_MESSAGE_ID_FORMAT, address, port),
                 0);
         this.timeHandler.registering_Request(
                 String.format(Constants.PING_MESSAGE_ID_FORMAT, address, port),
-                Constants.PING_TIMEOUT,
-                this.callback
-                );
+                this.callback, Constants.PING_TIMEOUT
+        );
         this.sendRequest(message);
 
     }
@@ -142,8 +141,8 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
         for (String target: targets) {
             ChannelMessage message = new ChannelMessage(
-                    target.split(":")[0],
-                    Integer.parseInt(target.split(":")[1]), rawMessage);
+                    rawMessage, Integer.parseInt(target.split(":")[1]), target.split(":")[0]
+            );
             sendRequest(message);
         }
     }
@@ -160,8 +159,8 @@ public class PingHandler implements AbstractRequestHandler, AbstractResponseHand
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5,payload);
         for (String target: targets) {
             ChannelMessage message = new ChannelMessage(
-                    target.split(":")[0],
-                    Integer.parseInt(target.split(":")[1]), rawMessage);
+                    rawMessage, Integer.parseInt(target.split(":")[1]), target.split(":")[0]
+            );
             sendRequest(message);
         }
     }

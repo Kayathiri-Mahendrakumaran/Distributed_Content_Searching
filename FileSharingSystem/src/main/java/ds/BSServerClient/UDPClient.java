@@ -1,24 +1,25 @@
 package  ds.BSServerClient;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.concurrent.BlockingQueue;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.DatagramSocket;
+
 
 public class UDPClient extends Thread {
+    private volatile boolean action = true;
+    private final DatagramSocket dgramSocket;
     private final BlockingQueue<ChannelMessage> channelOut;
-    private final DatagramSocket socket;
-    private volatile boolean process = true;
 
-    public UDPClient(BlockingQueue<ChannelMessage> channelOut, DatagramSocket socket) {
+    public UDPClient(DatagramSocket socket, BlockingQueue<ChannelMessage> channelOut) {
         this.channelOut = channelOut;
-        this.socket = socket;
+        this.dgramSocket = socket;
     }
 
     @Override
     public void run() {
-        while (process) {
+        while (action) {
             try {
                 ChannelMessage message = channelOut.take();
                 String address = message.getAddress();
@@ -30,12 +31,12 @@ public class UDPClient extends Thread {
                         InetAddress.getByName(address),
                         port
                 );
-                socket.send(packet);
+                dgramSocket.send(packet);
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        socket.close();
+        dgramSocket.close();
     }
 }
 

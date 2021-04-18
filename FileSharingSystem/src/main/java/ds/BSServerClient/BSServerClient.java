@@ -1,19 +1,18 @@
 package ds.BSServerClient;
 
-import  ds.Constants;
-
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import  ds.Constants;
 import java.net.InetAddress;
-import java.util.*;
+import java.io.IOException;
 import java.net.*;
+import java.net.DatagramPacket;
 import java.util.logging.Logger;
+import java.util.*;
 
 
 public class BSServerClient {
 
-    private DatagramSocket datagramSocket;
+    private DatagramSocket dgramSocket;
 
     private String BServer_IPAddress;
     private int BServer_Port;
@@ -29,7 +28,7 @@ public class BSServerClient {
 
     public BSServerClient() throws IOException{
 
-        datagramSocket = new DatagramSocket();
+        dgramSocket = new DatagramSocket();
 
         Properties bsProperties = new Properties();
         try {
@@ -75,15 +74,15 @@ public class BSServerClient {
         DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
                 request.length(), InetAddress.getByName(BServer_IPAddress), BServer_Port);
 
-        datagramSocket.setSoTimeout(TIMEOUT_REGISTRATION);
+        dgramSocket.setSoTimeout(TIMEOUT_REGISTRATION);
 
-        datagramSocket.send(sendingPacket);
+        dgramSocket.send(sendingPacket);
 
         byte[] buffer = new byte[65536];
 
         DatagramPacket received = new DatagramPacket(buffer, buffer.length);
 
-        datagramSocket.receive(received);
+        dgramSocket.receive(received);
 
         String response = new String(received.getData(), 0, received.getLength());
 
@@ -152,15 +151,15 @@ public class BSServerClient {
         DatagramPacket sendingPacket = new DatagramPacket(request.getBytes(),
                 request.length(), InetAddress.getByName(BServer_IPAddress), BServer_Port);
 
-        datagramSocket.setSoTimeout(TIMEOUT_REGISTRATION);
+        dgramSocket.setSoTimeout(TIMEOUT_REGISTRATION);
 
-        datagramSocket.send(sendingPacket);
+        dgramSocket.send(sendingPacket);
 
         byte[] buffer = new byte[65536];
 
         DatagramPacket received = new DatagramPacket(buffer, buffer.length);
 
-        datagramSocket.receive(received);
+        dgramSocket.receive(received);
 
         String response = new String(received.getData(), 0, received.getLength());
 

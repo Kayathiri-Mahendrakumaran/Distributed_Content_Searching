@@ -49,9 +49,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
         String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
 
         ChannelMessage initialMessage = new ChannelMessage(
-                this.routingTable.get_Address(),
-                this.routingTable.get_Port(),
-                rawMessage);
+                rawMessage, this.routingTable.get_Port(), this.routingTable.get_Address()
+        );
 
         this.handleResponse(initialMessage);
     }
@@ -112,9 +111,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
             String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
 
-            ChannelMessage queryHitMessage = new ChannelMessage(address,
-                    port,
-                    rawMessage);
+            ChannelMessage queryHitMessage = new ChannelMessage(rawMessage, port, address
+            );
 
             this.sendRequest(queryHitMessage);
         }
@@ -140,9 +138,8 @@ public class SearchQueryHandler implements AbstractResponseHandler, AbstractRequ
 
                 String rawMessage = String.format(Constants.MSG_FORMAT, payload.length() + 5, payload);
 
-                ChannelMessage queryMessage = new ChannelMessage(neighbour.get_Address(),
-                        neighbour.get_Port(),
-                        rawMessage);
+                ChannelMessage queryMessage = new ChannelMessage(rawMessage, neighbour.get_Port(), neighbour.get_Address()
+                );
 
                 this.sendRequest(queryMessage);
             }
