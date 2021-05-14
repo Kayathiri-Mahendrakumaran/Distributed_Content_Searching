@@ -78,9 +78,9 @@ public class MessageBroker extends Thread{
             try {
                 ChannelMessage message = channelIn.poll(100, TimeUnit.MILLISECONDS);
                 if (message != null) {
-                    LOG.info("Message Received => " + message.getMessage()
-                            + " from: " + message.getAddress()
-                            + ":" + message.getPort());
+//                    LOG.info("Message Received => " + message.getMessage()
+//                            + " from: " + message.getAddress()
+//                            + ":" + message.getPort());
 
                     AbstractResponseHandler abstractResponseHandler
                             = ResponseHandlerFactory.getResponseHandler(
